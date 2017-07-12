@@ -14,7 +14,7 @@ entity.kififeedback.collection:
     _title: 'Submitted feedback'
   requirements:
     kififeedback: \d+
-    _permission: 'administer kififeedback'
+    _permission: 'manage kififeedback'
 
 entity.kififeedback.add_form:
   path: '/feedback/{kififeedback_channel}'
@@ -57,7 +57,7 @@ entity.kififeedback_channel.collection:
     _entity_list: 'kififeedback_channel'
     _title: 'Feedback channels'
   requirements:
-    _permission: 'administer kififeedback'
+    _permission: 'manage kififeedback'
 
 entity.kififeedback_channel.add_form:
   path: '/admin/structure/channels/add'

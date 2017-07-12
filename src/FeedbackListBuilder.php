@@ -41,7 +41,7 @@ class FeedbackListBuilder extends EntityListBuilder {
     $header['channel'] = $this->t('Channel');
     $header['subject'] = $this->t('Subject');
     $header['sender'] = $this->t('Sender');
-    $header['action'] = $this->t('Lastest action');
+    $header['action'] = $this->t('Latest action');
     return $header + parent::buildHeader();
   }
 

@@ -148,7 +148,6 @@ class Feedback extends ContentEntityBase {
 
     $fields['body'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Message'))
-      ->setDescription(t('Feedback content'))
       ->setSetting('max_length', 10000)
       ->setRequired(TRUE)
       ->setDisplayOptions('form', [

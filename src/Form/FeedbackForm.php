@@ -30,6 +30,12 @@ class FeedbackForm extends ContentEntityForm {
     return $form;
   }
 
+  public function actions(array $form, FormStateInterface $form_state) {
+    $actions = parent::actions($form, $form_state);
+    $actions['submit']['#value'] = $this->t('Submit');
+    return $actions;
+  }
+
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
     drupal_set_message($this->t('Thank you for your feedback.'));

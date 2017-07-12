@@ -138,7 +138,6 @@ class Feedback extends ContentEntityBase {
 
     $fields['subject'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Subject'))
-      ->setDescription(t('Subject for feedback.'))
       ->setDisplayOptions('form', [
         'weight' => 0,
       ])

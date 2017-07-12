@@ -1,0 +1,5 @@
+kififeedback.channel_add:
+  route_name: entity.kififeedback_channel.add_form
+  title: 'New channel'
+  appears_on:
+    - entity.kififeedback_channel.collection

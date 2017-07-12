@@ -1,0 +1,8 @@
+<p>
+  <div>{{ date }}</div>
+  {% if is_forward %}
+    {% trans %}{{ author }} forwarded to {{ recipient }}.{% endtrans %}
+  {% elseif is_response %}
+    {% trans %}{{ author }} sent a response.{% endtrans %}
+  {% endif %}
+</p>

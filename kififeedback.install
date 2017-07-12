@@ -1,0 +1,52 @@
+<?php
+
+use Drupal\kififeedback\LogEntryInterface;
+
+function kififeedback_install() {
+  if (!Drupal::moduleHandler()->moduleExists('kifi_feedback')) {
+    return;
+  }
+
+  /*
+   * Convert messages from old feedback module to new format.
+   */
+
+  $feedback_storage = Drupal::entityTypeManager()->getStorage('kififeedback');
+  $log_storage = Drupal::entityTypeManager()->getStorage('kififeedback_log');
+  $messages = Drupal::entityTypeManager()->getStorage('kifi_feedback_message')->loadMultiple();
+
+  foreach ($messages as $message) {
+    $feedback = $feedback_storage->create([
+      'id' => $message->id(),
+      'uuid' => $message->get('uuid')->value,
+      'name' => $message->getSender(),
+      'email' => $message->getEmail(),
+      'created' => strtotime($message->getCreated()),
+      'comment' => $message->getComment(),
+    ]);
+
+    if ($message->isReplySent()) {
+      $entry = $log_storage->create([
+        'action' => LogEntryInterface::ACTION_RESPOND,
+        'message' => $message->getReply(),
+        'user' => $message->getReplySender(),
+        'created' => strtotime($message->getReplyDate()),
+      ]);
+
+      $feedback->addActionToLog($entry);
+    }
+
+    if ($message->isForwarded()) {
+      $entry = $log_storage->create([
+        'action' => LogEntryInterface::ACTION_FORWARD,
+        'message' => ['value' => '[old message, no log]', 'format' => 'plain_text'],
+        'user' => $message->getForwardedBy(),
+        'created' => strtotime($message->getForwardDate()),
+      ]);
+
+      $feedback->addActionToLog($entry);
+    }
+
+    $feedback->save();
+  }
+}

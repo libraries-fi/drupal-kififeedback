@@ -1,0 +1,84 @@
+entity.kififeedback.canonical:
+  path: '/admin/content/feedback/{kififeedback}/preview'
+  defaults:
+    _entity_view: 'kififeedback.preview'
+    _title: 'Feedback'
+  requirements:
+    kififeedback: \d+
+    _entity_access: 'kififeedback.view'
+
+entity.kififeedback.collection:
+  path: '/admin/content/feedback'
+  defaults:
+    _entity_list: 'kififeedback'
+    _title: 'Submitted feedback'
+  requirements:
+    kififeedback: \d+
+    _permission: 'administer kififeedback'
+
+entity.kififeedback.add_form:
+  path: '/feedback/{kififeedback_channel}'
+  defaults:
+    _controller: 'Drupal\kififeedback\Controller\FeedbackController::addForm'
+    kififeedback_channel: 'default'
+  requirements:
+    _access: 'TRUE'
+
+entity.kififeedback.edit_form:
+  path: '/admin/content/feedback/{kififeedback}'
+  defaults:
+    _entity_form: 'kififeedback.edit'
+    _title: 'Respond to feedback'
+  requirements:
+    _entity_access: kififeedback.update
+
+entity.kififeedback.forward_form:
+  path: '/admin/content/feedback/{kififeedback}/forward'
+  defaults:
+    _entity_form: 'kififeedback.forward'
+    _title: 'Forward message'
+  requirements:
+    kififeedback: \d+
+    _entity_access: 'kififeedback.update'
+
+entity.kififeedback.delete_form:
+  path: '/admin/content/feedback/{kififeedback}/delete'
+  defaults:
+    _entity_form: 'kififeedback.delete'
+  requirements:
+    kififeedback: \d+
+    _entity_access: 'kififeedback.delete'
+
+
+
+entity.kififeedback_channel.collection:
+  path: '/admin/structure/channels'
+  defaults:
+    _entity_list: 'kififeedback_channel'
+    _title: 'Feedback channels'
+  requirements:
+    _permission: 'administer kififeedback'
+
+entity.kififeedback_channel.add_form:
+  path: '/admin/structure/channels/add'
+  defaults:
+    _entity_form: 'kififeedback_channel.default'
+    _title: 'New feedback channel'
+  requirements:
+    _entity_create_access: 'kififeedback_channel'
+
+entity.kififeedback_channel.edit_form:
+  path: '/admin/structure/channels/{kififeedback_channel}'
+  defaults:
+    _entity_form: 'kififeedback_channel.default'
+  requirements:
+    kififeedback_channel: \w+
+    _entity_access: 'kififeedback_channel.update'
+
+entity.kififeedback_channel.delete_form:
+  path: '/admin/structure/channels/{kififeedback_channel}/delete'
+  defaults:
+    _entity_form: 'kififeedback_channel.delete'
+  requirements:
+    kififeedback_channel: \w+
+    _entity_access: 'kififeedback_channel.delete'

@@ -1,0 +1,8 @@
+name: Enhanced feedback
+type: module
+core: 8.x
+package: Kirjastot.fi
+description: "Includes support for collecting feedback from multiple sites."
+configure: entity.kififeedback_channel.collection
+dependencies:
+  - kifimail

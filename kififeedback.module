@@ -1,0 +1,95 @@
+<?php
+
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Url;
+use Drupal\kififeedback\LogEntryInterface;
+
+function kififeedback_theme() {
+  return [
+    'kififeedback_form' => [
+      'render element' => 'form'
+    ],
+    'kififeedback_log' => [
+      'variables' => [
+        'entry' => NULL,
+        'is_forward' => FALSE,
+        'is_response' => FALSE,
+      ]
+    ]
+  ];
+}
+
+function kififeedback_mail($key, array &$message, array $params) {
+  switch ($key) {
+    case 'forward':
+    case 'reply':
+      $feedback = $params['kififeedback'];
+      $message['params']['feedback'] = [
+        'entity' => $feedback,
+        'subject' => $feedback->getSubject(),
+        'body' => $feedback->getBody(),
+        'author' => $feedback->getName(),
+      ];
+      break;
+  }
+}
+
+function kififeedback_tokens($type, array $tokens, array $data, array $options, BubbleableMetadata $metadata) {
+  $replacements = [];
+
+  if ($type == 'feedback' && isset($data['kififeedback'])) {
+    $feedback = $data['kififeedback'];
+    foreach ($tokens as $name => $original) {
+      switch ($name) {
+        case 'subject':
+          $replacements[$original] = $feedback->getSubject();
+          break;
+        case 'body':
+          $replacements[$original] = Markup::create($feedback->getBody());
+          break;
+        case 'author':
+          $replacements[$original] = $feedback->getName();
+          break;
+        case 'email':
+          $replacements[$original] = $feedback->getEmail();
+          break;
+        case 'date':
+          $time = $feedback->getCreatedTime();
+          $langcode = $feedback->language()->getId();
+          $replacements[$original] = Drupal::service('date.formatter')->format($time, 'medium', NULL, NULL, $langcode);
+          break;
+        case 'forward-message':
+        case 'reply':
+          if ($log_entry = $feedback->getLatestAction()) {
+            // NOTE: Do not pass $tokens or recursion will happen.
+            $forward_message = \Drupal::service('token')->replace($log_entry->getMessage(), [], [], $metadata);
+            $replacements[$original] = check_markup($forward_message, $log_entry->getMessageFormat());
+          }
+          break;
+      }
+    }
+  }
+
+  return $replacements;
+}
+
+use Drupal\Component\Render\FormattableMarkup;
+
+function template_preprocess_kififeedback_log(array &$variables) {
+  $entry = $variables['entry'];
+  $variables['is_forward'] = $entry->getAction() == LogEntryInterface::ACTION_FORWARD;
+  $variables['is_response'] = $entry->getAction() == LogEntryInterface::ACTION_RESPOND;
+  $variables['date'] = format_date($entry->getCreatedTime());
+
+  $author = $entry->getUser();
+  $author_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $author->url(), '@name' => $author->getDisplayName()]);
+  $variables['author'] = Markup::create((string)$author_link);
+
+  if ($user = $entry->getForwardUser()) {
+    $recipient_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $user->url(), '@name' => $user->getDisplayName()]);
+    $variables['recipient'] = Markup::create((string)$recipient_link);
+  } elseif ($email = $entry->getForwardEmail()) {
+    $variables['recipient'] = $email;
+  }
+}

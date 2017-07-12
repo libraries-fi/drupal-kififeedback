@@ -18,6 +18,13 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
       '#rows' => 10,
     ];
 
+    if ($entry = $feedback->getLatestAction()) {
+      if ($entry->getAction() == LogEntryInterface::ACTION_RESPOND) {
+        $form['message']['#default_value'] = $entry->getMessage();
+        $form['message']['#format'] = $entry->getMessageFormat();
+      }
+    }
+
     return $form;
   }
 

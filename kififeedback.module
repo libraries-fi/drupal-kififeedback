@@ -91,5 +91,7 @@ function template_preprocess_kififeedback_log(array &$variables) {
     $variables['recipient'] = Markup::create((string)$recipient_link);
   } elseif ($email = $entry->getForwardEmail()) {
     $variables['recipient'] = $email;
+  } else {
+    $variables['recipient'] = Markup::create('<i>not available</i>');
   }
 }

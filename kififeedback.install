@@ -17,18 +17,24 @@ function kififeedback_install() {
 
   foreach ($messages as $message) {
     $feedback = $feedback_storage->create([
+      'channel' => 'default',
       'id' => $message->id(),
       'uuid' => $message->get('uuid')->value,
       'name' => $message->getSender(),
       'email' => $message->getEmail(),
       'created' => strtotime($message->getCreated()),
       'comment' => $message->getComment(),
+      'subject' => $message->getSubject(),
+      'body' => ['value' => $message->getMessage(), 'format' => 'plain_text'],
     ]);
+
+    // Saving here is required to avoid infinite recursion.
+    $feedback->save();
 
     if ($message->isReplySent()) {
       $entry = $log_storage->create([
         'action' => LogEntryInterface::ACTION_RESPOND,
-        'message' => $message->getReply(),
+        'message' => ['value' => $message->getReply(), 'format' => 'plain_text'],
         'user' => $message->getReplySender(),
         'created' => strtotime($message->getReplyDate()),
       ]);
@@ -47,6 +53,13 @@ function kififeedback_install() {
       $feedback->addActionToLog($entry);
     }
 
+    // Save to store log entries.
     $feedback->save();
   }
+}
+
+function kififeedback_uninstall() {
+  $storage = Drupal::entityTypeManager()->getStorage('kifimail');
+  $entities = $storage->loadMultiple(['kififeedback_forward', 'kififeedback_reply']);
+  $storage->delete($entities);
 }

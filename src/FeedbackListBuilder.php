@@ -14,6 +14,8 @@ use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Unicode;
 
+use Html2Text\Html2Text;
+
 class FeedbackListBuilder extends EntityListBuilder {
   protected $channelStorage;
   protected $dateFormatter;
@@ -44,10 +46,12 @@ class FeedbackListBuilder extends EntityListBuilder {
   }
 
   public function buildRow(EntityInterface $feedback) {
+    $body = (new Html2Text($feedback->getBody()))->getText();
+
     $row['channel'] = $feedback->getChannel()->label();
     $row['title']['data']['subject'] = ['#type' => 'item', '#plain_text' => $feedback->label()];
     $row['title']['data']['snippet'] = [
-      '#markup' => Unicode::truncate(strip_tags($feedback->getBody()), 30, true, true),
+      '#markup' => Unicode::truncate($body, 50, true, true),
       '#prefix' => '<em>',
       '#suffix' => '</em>',
     ];

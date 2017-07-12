@@ -1,0 +1,7 @@
+uuid: 7028b25c-1ac5-4cdb-9b98-d8bacf703ba0
+langcode: en
+status: true
+dependencies: {  }
+id: default
+name: 'Site default'
+url: ''

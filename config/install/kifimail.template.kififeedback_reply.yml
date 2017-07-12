@@ -7,5 +7,4 @@ label: '[Kirjastot.fi] Palautteeseen vastaaminen'
 theme: kifimail
 subject: 'Re: [feedback:subject]'
 body: "[feedback:reply]\r\n\r\n<blockquote>\r\n  <cite>[feedback:author]</cite>\r\n  [feedback:body]\r\n</blockquote>"
-style: null
-variables: null
+with_signature: 1

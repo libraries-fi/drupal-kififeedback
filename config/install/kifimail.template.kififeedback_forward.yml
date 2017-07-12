@@ -6,6 +6,5 @@ id: kififeedback_forward
 label: '[Kirjastot.fi] Palautteen välittäminen'
 theme: kifimail
 subject: 'Fwd: [feedback:subject]'
-body: "[feedback:forward-message]\r\n\r\n<blockquote>\r\n  <cite>[feedback:author]</cite>\r\n  [feedback:body]\r\n</blockquote>"
-style: null
-variables: null
+body: "[feedback:forward-message]\r\n\r\n<blockquote>\r\n  <cite>[feedback:author]</cite> – [feedback:date]\r\n  [feedback:body]\r\n</blockquote>"
+with_signature: 1

@@ -123,6 +123,22 @@ class Feedback extends ContentEntityBase {
     $this->get('actions')->appendItem($log_entry);
   }
 
+  public function getResponseDraft() {
+    return $this->get('temp_reply')->value;
+  }
+
+  public function setResponseDraft($text) {
+    $this->set('temp_reply', $text);
+  }
+
+  public function setResponseDraftFormat($format) {
+    $this->get('temp_reply')->format = $format;
+  }
+
+  public function getResponseDraftFormat() {
+    return $this->get('temp_reply')->format;
+  }
+
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 
@@ -203,6 +219,12 @@ class Feedback extends ContentEntityBase {
         'type' => 'hidden',
         'format' => 'hidden',
       ]);
+
+    $fields['temp_reply'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(t('Temporary reply'))
+      ->setDescription(t('Message is stored temporarily until response is sent.'))
+      ->setSetting('max_length', 10000)
+      ->setRequired(FALSE);
 
     return $fields;
   }

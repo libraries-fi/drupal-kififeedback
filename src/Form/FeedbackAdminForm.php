@@ -18,7 +18,10 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
       '#rows' => 10,
     ];
 
-    if ($entry = $feedback->getLatestAction()) {
+    if ($message = $feedback->getResponseDraft()) {
+      $form['message']['#default_value'] = $message;
+      $form['message']['#format'] = $feedback->getResponseDraftFormat();
+    } else if ($entry = $feedback->getLatestAction()) {
       if ($entry->getAction() == LogEntryInterface::ACTION_RESPOND) {
         $form['message']['#default_value'] = $entry->getMessage();
         $form['message']['#format'] = $entry->getMessageFormat();
@@ -32,6 +35,8 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     $feedback = $this->entity;
     $message = $form_state->getValue('message');
     $langcode = $feedback->language()->getId();
+
+    $feedback->setResponseDraft(['value' => NULL, 'format' => NULL]);
 
     $log_entry = $this->entityManager->getStorage('kififeedback_log')->create([
       'action' => LogEntryInterface::ACTION_RESPOND,
@@ -48,13 +53,19 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     drupal_set_message($this->t('Response to feedback was submitted.'));
   }
 
+  public function saveDraft(array &$form, FormStateInterface $form_state) {
+    $message = $form_state->getValue('message');
+    $this->entity->setResponseDraft($message);
+  }
+
   public function saveSuccessMessage(array $form, FormStateInterface $form_state) {
     drupal_set_message($this->t('The changes have been saved.'));
   }
 
   public function validateHasEmail(array $form, FormStateInterface $form_state) {
-    if (!$this->entity->getEmail()) {
-      $form_state->setError($form['feedback_info']['user_email'], $this->t('Cannot respond without an email address.'));
+    $email = $form_state->getValue('email')[0]['value'];
+    if (empty($email)) {
+      $form_state->setError($form['user_info']['email'], $this->t('Cannot respond without an email address.'));
     }
   }
 
@@ -70,6 +81,9 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
 
     $pos = array_search('::save', $actions['send']['#submit']);
     array_splice($actions['send']['#submit'], $pos, 0, '::sendMessage');
+
+    $pos = array_search('::save', $actions['submit']['#submit']);
+    array_splice($actions['submit']['#submit'], $pos, 0, '::saveDraft');
 
     return $actions;
   }

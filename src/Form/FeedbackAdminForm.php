@@ -46,9 +46,8 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     $feedback->addActionToLog($log_entry);
 
     $this->mailer->mail('kififeedback', 'reply', $feedback->getEmail(), $langcode, [
-      'from' => $this->currentUser(),
       'kififeedback' => $feedback,
-    ]);
+    ], $this->currentUser());
 
     drupal_set_message($this->t('Response to feedback was submitted.'));
   }

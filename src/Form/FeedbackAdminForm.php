@@ -68,13 +68,21 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     }
   }
 
+  public function validateHasResponse(array &$form, FormStateInterface $form_state) {
+    $response = $form_state->getValue('message')['value'];
+
+    if (empty($response)) {
+      $form_state->setError($form['message']['value'], $this->t('Write a response in order to send response email.'));
+    }
+  }
+
   public function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#dropbutton'] = 'save';
 
     $actions['send'] = $actions['submit'];
     $actions['send']['#value'] = $this->t('Send message');
-    $actions['send']['#validate'] = ['::validateForm', '::validateHasEmail'];
+    $actions['send']['#validate'] = ['::validateForm', '::validateHasEmail', '::validateHasResponse'];
 
     $actions['submit']['#submit'][] = '::saveSuccessMessage';
 

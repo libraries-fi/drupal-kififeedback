@@ -21,11 +21,9 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     if ($message = $feedback->getResponseDraft()) {
       $form['message']['#default_value'] = $message;
       $form['message']['#format'] = $feedback->getResponseDraftFormat();
-    } else if ($entry = $feedback->getLatestAction()) {
-      if ($entry->getAction() == LogEntryInterface::ACTION_RESPOND) {
-        $form['message']['#default_value'] = $entry->getMessage();
-        $form['message']['#format'] = $entry->getMessageFormat();
-      }
+    } else if ($entry = $feedback->getLatestResponse()) {
+      $form['message']['#default_value'] = $entry->getMessage();
+      $form['message']['#format'] = $entry->getMessageFormat();
     }
 
     return $form;

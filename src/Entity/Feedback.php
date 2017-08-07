@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\kififeedback\LogEntryInterface;
 
 /**
  * @ContentEntityType(
@@ -116,6 +117,14 @@ class Feedback extends ContentEntityBase {
   public function getLatestAction() {
     $actions = $this->get('actions');
     return $actions->isEmpty() ? NULL : $actions[count($actions) - 1]->entity;
+  }
+
+  public function getLatestResponse() {
+    foreach ($this->get('actions') as $field) {
+      if ($field->entity->getAction() == LogEntryInterface::ACTION_RESPOND) {
+        return $field->entity;
+      }
+    }
   }
 
   public function addActionToLog($log_entry) {

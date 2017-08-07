@@ -2,19 +2,17 @@
 
 namespace Drupal\kififeedback;
 
+use Html2Text\Html2Text;
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\Unicode;
-
-use Html2Text\Html2Text;
 
 class FeedbackListBuilder extends EntityListBuilder {
   protected $channelStorage;
@@ -25,14 +23,16 @@ class FeedbackListBuilder extends EntityListBuilder {
       $entity_type,
       $container->get('entity.manager')->getStorage($entity_type->id()),
       $container->get('entity.manager')->getStorage('kififeedback_channel'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('module_handler')
     );
   }
 
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, EntityStorageInterface $channel_storage, DateFormatterInterface $date_formatter) {
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, EntityStorageInterface $channel_storage, DateFormatterInterface $date_formatter, ModuleHandlerInterface $module_handler) {
     parent::__construct($entity_type, $storage);
     $this->channelStorage = $channel_storage;
     $this->dateFormatter = $date_formatter;
+    $this->moduleHandler = $module_handler;
   }
 
   public function buildHeader() {
@@ -85,6 +85,16 @@ class FeedbackListBuilder extends EntityListBuilder {
     }
 
     if ($action = $feedback->getLatestAction()) {
+      $basedir = $this->moduleHandler->getModule('kififeedback')->getPath();
+      $icon = $action->getAction() == LogEntryInterface::ACTION_RESPOND ? 'respond' : 'forward';
+      $row['action']['data']['icon'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'img',
+        '#attributes' => [
+          'src' => Url::fromUserInput(sprintf('/%s/icons/%s.svg', $basedir, $icon))->toString(),
+          'style' => 'height: 1rem; vertical-align: middle; opacity: .8'
+        ]
+      ];
       $row['action']['data']['type'] = ['#plain_text' => $action->label()];
       $row['action']['data']['user'] = [
         '#type' => 'link',
@@ -97,6 +107,8 @@ class FeedbackListBuilder extends EntityListBuilder {
         '#type' => 'item',
         '#plain_text' => $this->dateFormatter->format($action->getCreatedTime()),
       ];
+
+      // var_dump($row['action']['data']['icon'] );
     } else {
       $row['action'] = NULL;
     }

@@ -46,6 +46,7 @@ class FeedbackListBuilder extends EntityListBuilder {
   }
 
   public function buildRow(EntityInterface $feedback) {
+    $basedir = $this->moduleHandler->getModule('kififeedback')->getPath();
     $body = (new Html2Text($feedback->getBody()))->getText();
 
     $row['channel'] = $feedback->getChannel()->label();
@@ -85,7 +86,6 @@ class FeedbackListBuilder extends EntityListBuilder {
     }
 
     if ($action = $feedback->getLatestAction()) {
-      $basedir = $this->moduleHandler->getModule('kififeedback')->getPath();
       $icon = $action->getAction() == LogEntryInterface::ACTION_RESPOND ? 'respond' : 'forward';
       $row['action']['data']['icon'] = [
         '#type' => 'html_tag',
@@ -107,8 +107,21 @@ class FeedbackListBuilder extends EntityListBuilder {
         '#type' => 'item',
         '#plain_text' => $this->dateFormatter->format($action->getCreatedTime()),
       ];
-
-      // var_dump($row['action']['data']['icon'] );
+    }  elseif ($feedback->getResponseDraft()) {
+      // $row['action']['class'] = ['messages', 'messages--warning'];
+      // $row['action']['style'] = 'color: #734c00';
+      $row['action']['data']['icon'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'img',
+        '#attributes' => [
+          'src' => Url::fromUserInput(sprintf('/%s/icons/warning.svg', $basedir))->toString(),
+          'style' => 'height: 1rem; vertical-align: middle; opacity: .8'
+        ]
+      ];
+      $row['action']['data']['status'] = [
+        // '#type' => 'item',
+        '#plain_text' => $this->t('Response draft not sent yet!')
+      ];
     } else {
       $row['action'] = NULL;
     }

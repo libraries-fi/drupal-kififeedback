@@ -19,6 +19,16 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     ];
 
     if ($message = $feedback->getResponseDraft()) {
+      $form['preview_no_send_alert'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#attributes' => [
+          'class' => ['messages', 'messages--warning'],
+        ],
+        '#weight' => -200,
+        '#value' => $this->t('Response is saved as a draft. It has not been sent yet.'),
+      ];
+
       $form['message']['#default_value'] = $message;
       $form['message']['#format'] = $feedback->getResponseDraftFormat();
     } else if ($entry = $feedback->getLatestResponse()) {

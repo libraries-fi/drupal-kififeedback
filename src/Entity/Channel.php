@@ -15,6 +15,7 @@ use Drupal\kififeedback\ChannelInterface;
  *   handlers = {
  *     "form" = {
  *       "default" = "Drupal\kififeedback\Form\ChannelForm",
+ *       "delete" = "Drupal\Core\Entity\EntityDeleteForm"
  *     },
  *     "list_builder" = "Drupal\kififeedback\ChannelListBuilder",
  *   },

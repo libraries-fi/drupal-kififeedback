@@ -1,0 +1,12 @@
+entity.kififeedback.collection:
+  title: Feedback
+  route_name: entity.kififeedback.collection
+  parent: system.admin
+  description: 'Manage feedback submitted to the site.'
+  weight: 99
+entity.kififeedback.collection_2:
+  title: 'Feedback'
+  description: 'Manage feedback submitted by users.'
+  route_name: entity.kififeedback.collection
+  parent: system.admin_config_services
+  weight: 100

@@ -18,11 +18,22 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
       '#rows' => 10,
     ];
 
-    if ($entry = $feedback->getLatestAction()) {
-      if ($entry->getAction() == LogEntryInterface::ACTION_RESPOND) {
-        $form['message']['#default_value'] = $entry->getMessage();
-        $form['message']['#format'] = $entry->getMessageFormat();
-      }
+    if ($message = $feedback->getResponseDraft()) {
+      $form['preview_no_send_alert'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'p',
+        '#attributes' => [
+          'class' => ['messages', 'messages--warning'],
+        ],
+        '#weight' => -200,
+        '#value' => $this->t('Response is saved as a draft. It has not been sent yet.'),
+      ];
+
+      $form['message']['#default_value'] = $message;
+      $form['message']['#format'] = $feedback->getResponseDraftFormat();
+    } else if ($entry = $feedback->getLatestResponse()) {
+      $form['message']['#default_value'] = $entry->getMessage();
+      $form['message']['#format'] = $entry->getMessageFormat();
     }
 
     return $form;
@@ -33,6 +44,8 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     $message = $form_state->getValue('message');
     $langcode = $feedback->language()->getId();
 
+    $feedback->setResponseDraft(['value' => NULL, 'format' => NULL]);
+
     $log_entry = $this->entityManager->getStorage('kififeedback_log')->create([
       'action' => LogEntryInterface::ACTION_RESPOND,
       'message' => $message,
@@ -41,11 +54,15 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
     $feedback->addActionToLog($log_entry);
 
     $this->mailer->mail('kififeedback', 'reply', $feedback->getEmail(), $langcode, [
-      'from' => $this->currentUser(),
       'kififeedback' => $feedback,
-    ]);
+    ], $this->currentUser());
 
     drupal_set_message($this->t('Response to feedback was submitted.'));
+  }
+
+  public function saveDraft(array &$form, FormStateInterface $form_state) {
+    $message = $form_state->getValue('message');
+    $this->entity->setResponseDraft($message);
   }
 
   public function saveSuccessMessage(array $form, FormStateInterface $form_state) {
@@ -53,8 +70,17 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
   }
 
   public function validateHasEmail(array $form, FormStateInterface $form_state) {
-    if (!$this->entity->getEmail()) {
-      $form_state->setError($form['feedback_info']['user_email'], $this->t('Cannot respond without an email address.'));
+    $email = $form_state->getValue('email')[0]['value'];
+    if (empty($email)) {
+      $form_state->setError($form['user_info']['email'], $this->t('Cannot respond without an email address.'));
+    }
+  }
+
+  public function validateHasResponse(array &$form, FormStateInterface $form_state) {
+    $response = $form_state->getValue('message')['value'];
+
+    if (empty($response)) {
+      $form_state->setError($form['message']['value'], $this->t('Write a response in order to send response email.'));
     }
   }
 
@@ -64,12 +90,15 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
 
     $actions['send'] = $actions['submit'];
     $actions['send']['#value'] = $this->t('Send message');
-    $actions['send']['#validate'] = ['::validateForm', '::validateHasEmail'];
+    $actions['send']['#validate'] = ['::validateForm', '::validateHasEmail', '::validateHasResponse'];
 
     $actions['submit']['#submit'][] = '::saveSuccessMessage';
 
     $pos = array_search('::save', $actions['send']['#submit']);
     array_splice($actions['send']['#submit'], $pos, 0, '::sendMessage');
+
+    $pos = array_search('::save', $actions['submit']['#submit']);
+    array_splice($actions['submit']['#submit'], $pos, 0, '::saveDraft');
 
     return $actions;
   }

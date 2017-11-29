@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\kififeedback\LogEntryInterface;
 
 /**
  * @ContentEntityType(
@@ -118,9 +119,33 @@ class Feedback extends ContentEntityBase {
     return $actions->isEmpty() ? NULL : $actions[count($actions) - 1]->entity;
   }
 
+  public function getLatestResponse() {
+    foreach ($this->get('actions') as $field) {
+      if ($field->entity->getAction() == LogEntryInterface::ACTION_RESPOND) {
+        return $field->entity;
+      }
+    }
+  }
+
   public function addActionToLog($log_entry) {
     $log_entry->setAssociatedFeedback($this);
     $this->get('actions')->appendItem($log_entry);
+  }
+
+  public function getResponseDraft() {
+    return $this->get('temp_reply')->value;
+  }
+
+  public function setResponseDraft($text) {
+    $this->set('temp_reply', $text);
+  }
+
+  public function setResponseDraftFormat($format) {
+    $this->get('temp_reply')->format = $format;
+  }
+
+  public function getResponseDraftFormat() {
+    return $this->get('temp_reply')->format;
   }
 
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
@@ -203,6 +228,12 @@ class Feedback extends ContentEntityBase {
         'type' => 'hidden',
         'format' => 'hidden',
       ]);
+
+    $fields['temp_reply'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(t('Temporary reply'))
+      ->setDescription(t('Message is stored temporarily until response is sent.'))
+      ->setSetting('max_length', 10000)
+      ->setRequired(FALSE);
 
     return $fields;
   }

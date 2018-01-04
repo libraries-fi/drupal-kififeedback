@@ -88,10 +88,12 @@ class FeedbackListBuilder extends EntityListBuilder {
       '#weight' => 10,
     ];
 
-    if ($feedback->getUser()->isAuthenticated()) {
+    $user = $feedback->getUser();
+
+    if ($user && $user->isAuthenticated()) {
       $row['sender']['data']['name'] = [
         '#type' => 'link',
-        '#url' => $feedback->getUser()->urlInfo(),
+        '#url' => $user->urlInfo(),
         '#title' => $feedback->getName(),
       ];
 

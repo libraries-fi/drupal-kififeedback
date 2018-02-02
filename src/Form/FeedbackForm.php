@@ -14,6 +14,7 @@ class FeedbackForm extends ContentEntityForm {
 
     $form['name']['widget'][0]['value']['#title'] = $this->t('Your name');
     $form['email']['widget'][0]['value']['#title'] = $this->t('Your email address');
+    $form['body']['widget'][0]['#format'] = 'basic_html_without_ckeditor';
 
     if ($this->currentUser()->isAuthenticated()) {
       $user = $this->currentUser();

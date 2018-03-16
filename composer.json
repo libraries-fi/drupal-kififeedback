@@ -1,0 +1,6 @@
+{
+  "name": "libraries-fi/kifi_feedback",
+  "description": "Feedback management system.",
+  "type": "drupal-module",
+  "license": "GPL-2.0+"
+}

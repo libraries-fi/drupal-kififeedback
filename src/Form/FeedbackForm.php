@@ -27,7 +27,6 @@ class FeedbackForm extends ContentEntityForm {
       $form['email']['widget'][0]['value']['#plain_text'] = $user->getEmail();
       $form['email']['widget'][0]['value']['#value'] = $user->getEmail();
     }
-
     return $form;
   }
 

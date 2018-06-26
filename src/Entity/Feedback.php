@@ -235,6 +235,14 @@ class Feedback extends ContentEntityBase {
       ->setSetting('max_length', 10000)
       ->setRequired(FALSE);
 
+    $fields['captcha'] = BaseFieldDefinition::create('kifiform_captcha')
+      ->setLabel(t('Captcha'))
+      ->setDisplayOptions('form', [
+        'weight' => 1000,
+      ])
+      ->setComputed(TRUE)
+      ->setRequired(TRUE);
+
     return $fields;
   }
 

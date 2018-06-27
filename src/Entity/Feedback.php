@@ -240,8 +240,7 @@ class Feedback extends ContentEntityBase {
       ->setDisplayOptions('form', [
         'weight' => 1000,
       ])
-      ->setComputed(TRUE)
-      ->setRequired(TRUE);
+      ->setComputed(TRUE);
 
     return $fields;
   }

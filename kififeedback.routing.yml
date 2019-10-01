@@ -20,7 +20,7 @@ entity.kififeedback.add_form:
   path: '/feedback/{kififeedback_channel}'
   defaults:
     _controller: 'Drupal\kififeedback\Controller\FeedbackController::addForm'
-    _title: 'Send feedback'
+    _title_callback: 'Drupal\kififeedback\Controller\FeedbackController::getTitle'
     kififeedback_channel: 'default'
   requirements:
     _access: 'TRUE'

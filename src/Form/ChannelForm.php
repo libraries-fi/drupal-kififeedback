@@ -36,6 +36,20 @@ class ChannelForm extends BundleEntityFormBase {
       '#required' => FALSE,
     ];
 
+    $form['content_normal'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Content'),
+      '#format'=> $channel->getContentFormat(),
+      '#default_value' => $channel->getContent(),
+    );
+
+    $form['content_accessibility'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Content (accessiblity)'),
+      '#format'=> $channel->getContentAccessibilityFormat(),
+      '#default_value' => $channel->getContentAccessibility(),
+    );
+
     return $form;
   }
 

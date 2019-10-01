@@ -1,0 +1,25 @@
+# Schema for the configuration files of the Kififeedback module.
+# TODO: Add notified email/user
+
+kififeedback.channel.*:
+  type: config_entity
+  label: 'Feedback channel'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    name:
+      type: label
+      label: 'Name'
+    url:
+      type: label
+      label: 'Url'
+    status:
+      type: boolean
+      label: 'Status'
+    content_normal:
+      type: text_format
+      label: 'Content'
+    content_accessibility:
+      type: text_format
+      label: 'Content (accessibility)'

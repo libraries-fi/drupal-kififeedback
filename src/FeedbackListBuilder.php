@@ -58,8 +58,10 @@ class FeedbackListBuilder extends EntityListBuilder {
   }
 
   public function buildHeader() {
+    $header['icon'] = '';
     $header['channel'] = $this->t('Channel');
     $header['subject'] = $this->t('Subject');
+    
     $header['sender'] = $this->t('Sender');
     $header['action'] = $this->t('Latest action');
 
@@ -68,6 +70,23 @@ class FeedbackListBuilder extends EntityListBuilder {
 
   public function buildRow(EntityInterface $feedback) {
     $basedir = $this->moduleHandler->getModule('kififeedback')->getPath();
+
+    // No icon by default. Should channels have their own icons?
+    $row['icon'] = [
+      'data' => ''
+    ];
+    
+    if($feedback->getAccessibility()) {
+      $row['icon']['data'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'img',
+        '#attributes' => [
+          'src' => Url::fromUserInput(sprintf('/%s/icons/accessibility.svg', $basedir))->toString(),
+          'style' => 'height: 1.5rem; vertical-align: middle'
+        ]
+      ];
+    }
+    
     $body = (new Html2Text($feedback->getBody()))->getText();
 
     $row['channel'] = [

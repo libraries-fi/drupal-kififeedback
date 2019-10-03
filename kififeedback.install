@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\kififeedback\LogEntryInterface;
 
 function kififeedback_install() {
@@ -56,6 +58,24 @@ function kififeedback_install() {
     // Save to store log entries.
     $feedback->save();
   }
+}
+
+function kififeedback_update_8001() {
+  
+  $storage_definition = BaseFieldDefinition::create('boolean')
+    ->setLabel(new TranslatableMarkup('Accessibility'))
+    ->setDescription(new TranslatableMarkup('Whether or not this is a accessibility feedback.'))
+    ->setDefaultValue(false)
+    ->setDisplayOptions('form', array(
+      'type' => 'boolean_checkbox',
+      'settings' => array(
+        'display_label' => TRUE,
+      ),
+      'weight' => -1
+  ));
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('accessibility', 'kififeedback', 'kififeedback', $storage_definition);
 }
 
 function kififeedback_uninstall() {

@@ -114,6 +114,14 @@ class Feedback extends ContentEntityBase {
     $this->set('comment', $comment);
   }
 
+  public function getAccessibility() {
+    return $this->get('accessibility')->value;
+  }
+
+  public function setAccessibility($accessibility) {
+    $this->set('accessibility', $accessibility);
+  }
+
   public function getLatestAction() {
     $actions = $this->get('actions');
     return $actions->isEmpty() ? NULL : $actions[count($actions) - 1]->entity;

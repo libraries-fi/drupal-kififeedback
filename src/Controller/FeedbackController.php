@@ -18,9 +18,13 @@ class FeedbackController extends ControllerBase {
     $feedback = $this->entityManager()->getStorage('kififeedback')->create([
       'channel' => $kififeedback_channel->id(),
     ]);
+
+    $accessibility = \Drupal::request()->query->has('accessibility');
+
     return $this->entityFormBuilder()->getForm($feedback, 'default',[
       'description_normal' => $kififeedback_channel->getContent(),
       'description_accessibility' => $kififeedback_channel->getContentAccessibility(),
+      'is_accessibility_feedback' => $accessibility
     ]);
   }
 }

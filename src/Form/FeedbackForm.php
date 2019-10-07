@@ -15,7 +15,8 @@ class FeedbackForm extends ContentEntityForm {
     $form['name']['widget'][0]['value']['#title'] = $this->t('Your name');
     $form['email']['widget'][0]['value']['#title'] = $this->t('Your email address');
     $form['body']['widget'][0]['#format'] = 'basic_html_without_ckeditor';
-
+    
+    $form['accessibility']['widget']['value']['#default_value'] = $form_state->getStorage()['is_accessibility_feedback'];
 
     $form['description'] = [
       '#type' => 'item',

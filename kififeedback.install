@@ -63,8 +63,7 @@ function kififeedback_install() {
 function kififeedback_update_8001() {
   
   $storage_definition = BaseFieldDefinition::create('boolean')
-    ->setLabel(new TranslatableMarkup('Accessibility'))
-    ->setDescription(new TranslatableMarkup('Whether or not this is a accessibility feedback.'))
+    ->setLabel(new TranslatableMarkup('Accessibility feedback'))
     ->setDefaultValue(false)
     ->setDisplayOptions('form', array(
       'type' => 'boolean_checkbox',

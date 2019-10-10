@@ -16,7 +16,7 @@ class FeedbackForm extends ContentEntityForm {
     $form['email']['widget'][0]['value']['#title'] = $this->t('Your email address');
     $form['body']['widget'][0]['#format'] = 'basic_html_without_ckeditor';
     
-    $form['accessibility']['widget']['value']['#default_value'] = $form_state->getStorage()['is_accessibility_feedback'];
+    $form['is_accessibility_feedback']['widget']['value']['#default_value'] = $form_state->getStorage()['is_accessibility_feedback'];
 
     $form['description'] = [
       '#type' => 'item',
@@ -24,7 +24,7 @@ class FeedbackForm extends ContentEntityForm {
       '#states' => [
         //show this textfield only if the radio 'other' is selected above
         'visible' => [
-          ':input[name="accessibility[value]"]' => ['checked' => FALSE],
+          ':input[name="is_accessibility_feedback[value]"]' => ['checked' => FALSE],
         ],
       ],
       '#weight' => -10,
@@ -37,7 +37,7 @@ class FeedbackForm extends ContentEntityForm {
       '#states' => [
         //show this textfield only if the radio 'other' is selected above
         'visible' => [
-          ':input[name="accessibility[value]"]' => ['checked' => TRUE],
+          ':input[name="is_accessibility_feedback[value]"]' => ['checked' => TRUE],
         ],
       ],
       '#weight' => -10,

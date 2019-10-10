@@ -72,9 +72,9 @@ function kififeedback_update_8001() {
       ),
       'weight' => -1
   ));
-
+  
   \Drupal::entityDefinitionUpdateManager()
-    ->installFieldStorageDefinition('accessibility', 'kififeedback', 'kififeedback', $storage_definition);
+    ->installFieldStorageDefinition('is_accessibility_feedback', 'kififeedback', 'kififeedback', $storage_definition);
 }
 
 function kififeedback_uninstall() {

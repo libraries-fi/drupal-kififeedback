@@ -17,9 +17,9 @@ kififeedback.channel.*:
     status:
       type: boolean
       label: 'Status'
-    content_normal:
+    description_normal:
       type: text_format
-      label: 'Content'
-    content_accessibility:
+      label: 'Description'
+    description_accessibility:
       type: text_format
-      label: 'Content (accessibility)'
+      label: 'Description (accessibility)'

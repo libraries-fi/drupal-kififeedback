@@ -76,7 +76,7 @@ class FeedbackListBuilder extends EntityListBuilder {
       'data' => ''
     ];
     
-    if($feedback->getAccessibility()) {
+    if($feedback->isAccessibilityFeedback()) {
       $row['icon']['data'] = [
         '#type' => 'html_tag',
         '#tag' => 'img',

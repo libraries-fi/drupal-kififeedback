@@ -22,8 +22,8 @@ class FeedbackController extends ControllerBase {
     $accessibility = \Drupal::request()->query->has('accessibility');
 
     return $this->entityFormBuilder()->getForm($feedback, 'default',[
-      'description_normal' => $kififeedback_channel->getContent(),
-      'description_accessibility' => $kififeedback_channel->getContentAccessibility(),
+      'description_normal' => $kififeedback_channel->getDescription(),
+      'description_accessibility' => $kififeedback_channel->getDescriptionAccessibility(),
       'is_accessibility_feedback' => $accessibility
     ]);
   }

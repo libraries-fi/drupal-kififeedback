@@ -8,10 +8,23 @@ use Drupal\kififeedback\ChannelInterface;
 // exit('controller loaded');
 
 class FeedbackController extends ControllerBase {
+
+
+  public function getTitle(ChannelInterface $kififeedback_channel) {
+    return  $this->t('Send feedback') . ' - ' . $kififeedback_channel->getName();
+  }
+
   public function addForm(ChannelInterface $kififeedback_channel) {
     $feedback = $this->entityManager()->getStorage('kififeedback')->create([
-      'channel' => $kififeedback_channel->id()
+      'channel' => $kififeedback_channel->id(),
     ]);
-    return $this->entityFormBuilder()->getForm($feedback);
+
+    $accessibility = \Drupal::request()->query->has('accessibility');
+
+    return $this->entityFormBuilder()->getForm($feedback, 'default',[
+      'description_normal' => $kififeedback_channel->getDescription(),
+      'description_accessibility' => $kififeedback_channel->getDescriptionAccessibility(),
+      'is_accessibility_feedback' => $accessibility
+    ]);
   }
 }

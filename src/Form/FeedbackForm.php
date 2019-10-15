@@ -15,6 +15,34 @@ class FeedbackForm extends ContentEntityForm {
     $form['name']['widget'][0]['value']['#title'] = $this->t('Your name');
     $form['email']['widget'][0]['value']['#title'] = $this->t('Your email address');
     $form['body']['widget'][0]['#format'] = 'basic_html_without_ckeditor';
+    
+    $form['is_accessibility_feedback']['widget']['value']['#default_value'] = $form_state->getStorage()['is_accessibility_feedback'];
+
+    $form['description'] = [
+      '#type' => 'item',
+      '#markup' => $form_state->getStorage()['description_normal'],
+      '#states' => [
+        //show this textfield only if the radio 'other' is selected above
+        'visible' => [
+          ':input[name="is_accessibility_feedback[value]"]' => ['checked' => FALSE],
+        ],
+      ],
+      '#weight' => -10,
+      '#attributes' => array('class' => 'feedback-description')
+    ];
+
+    $form['description_accessibility'] = [
+      '#type' => 'item',
+      '#markup' => $form_state->getStorage()['description_accessibility'],
+      '#states' => [
+        //show this textfield only if the radio 'other' is selected above
+        'visible' => [
+          ':input[name="is_accessibility_feedback[value]"]' => ['checked' => TRUE],
+        ],
+      ],
+      '#weight' => -10,
+      '#attributes' => array('class' => 'feedback-description')
+    ];
 
     if ($this->currentUser()->isAuthenticated()) {
       $user = $this->currentUser();
@@ -38,6 +66,7 @@ class FeedbackForm extends ContentEntityForm {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    drupal_set_message($this->t('Thank you for your feedback.'));
+    drupal_set_message($this->t('Thank you for your feedback. Feedback received at \'@time\'', 
+      ['@time' => \Drupal::service('date.formatter')->format(time(), 'short')]));
   }
 }

@@ -5,3 +5,6 @@ dependencies: {  }
 id: default
 name: 'Site default'
 url: ''
+status: 1
+description_normal: 'Channel description'
+description_accessibility: 'Channel description (accessibility)'

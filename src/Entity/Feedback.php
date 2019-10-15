@@ -114,6 +114,14 @@ class Feedback extends ContentEntityBase {
     $this->set('comment', $comment);
   }
 
+  public function isAccessibilityFeedback() {
+    return $this->get('is_accessibility_feedback')->value;
+  }
+
+  public function setAccessibilityFeedback($accessibility) {
+    $this->set('is_accessibility_feedback', $accessibility);
+  }
+
   public function getLatestAction() {
     $actions = $this->get('actions');
     return $actions->isEmpty() ? NULL : $actions[count($actions) - 1]->entity;
@@ -169,6 +177,16 @@ class Feedback extends ContentEntityBase {
       ->setDisplayOptions('view', [
         'type' => 'hidden',
       ]);
+    
+    $fields['is_accessibility_feedback'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Accessibility feedback'))
+      ->setDisplayOptions('form', array(
+        'type' => 'boolean_checkbox',
+        'settings' => array(
+          'display_label' => TRUE,
+        ),
+        'weight' => -1
+      ));
 
     $fields['body'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Message'))

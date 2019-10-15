@@ -36,6 +36,8 @@ use Drupal\kififeedback\ChannelInterface;
  *     "name",
  *     "url",
  *     "status",
+ *     "description_normal",
+ *     "description_accessibility",
  *   }
  * )
  */
@@ -47,6 +49,20 @@ class Channel extends ConfigEntityBundleBase implements ChannelInterface {
   protected $name;
   protected $url;
   protected $status;
+  protected $description_normal;
+  protected $description_accessibility;
+
+  public function __construct(array $values, $entity_type) {
+    parent::__construct($values, $entity_type);
+    
+    // Set reasonable defaults for ckeditor enabled fields.
+    if(!$this->description_normal) {
+      $this->description_normal = ['value' => '', 'format' => 'basic_html'];
+    }
+    if(!$this->description_accessibility) {
+      $this->description_accessibility = ['value' => '', 'format' => 'basic_html'];
+    }
+  }
 
   public function getName() {
     return $this->name;
@@ -75,4 +91,37 @@ class Channel extends ConfigEntityBundleBase implements ChannelInterface {
   public function isEnabled() {
     return $this->getStatus() == self::STATUS_ENABLED;
   }
+
+  public function getDescription() {
+    return $this->description_normal['value'];
+  }
+
+  public function getDescriptionFormat() {
+    return $this->description_normal['format'];
+  }
+
+  public function setDescription($content) {
+    $this->description_normal['value'] = $content;
+  }
+
+  public function setDescriptionFormat($format) {
+    $this->description_normal['format'] = $format;
+  }
+
+  public function getDescriptionAccessibility() {
+    return $this->description_accessibility['value'];
+  }
+
+  public function setAccessibilityDescription($content) {
+    $this->description_accessibility['value'] = $content;
+  }
+  
+  public function getDescriptionAccessibilityFormat() {
+    return $this->description_accessibility['format'];
+  }
+
+  public function setDescriptionAccessibilityFormat($format) {
+    $this->description_accessibility['format'] = $format;
+  }
+
 }

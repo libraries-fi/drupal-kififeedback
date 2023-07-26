@@ -5,12 +5,10 @@ namespace Drupal\kififeedback\Form;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Entity\ContentEntityForm;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Mail\MailManagerInterface;
-use Drupal\kififeedback\LogEntryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FeedbackAdminFormBase extends ContentEntityForm {
@@ -19,7 +17,7 @@ class FeedbackAdminFormBase extends ContentEntityForm {
 
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
+      $container->get('entity.repository'),
       $container->get('entity_type.bundle.info'),
       $container->get('datetime.time'),
       $container->get('date.formatter'),
@@ -27,8 +25,8 @@ class FeedbackAdminFormBase extends ContentEntityForm {
     );
   }
 
-  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, DateFormatter $date_formatter, MailManagerInterface $mailer) {
-    parent::__construct($entity_manager, $entity_type_bundle_info, $time);
+  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, DateFormatter $date_formatter, MailManagerInterface $mailer) {
+    parent::__construct($entity_repository, $entity_type_bundle_info, $time);
     $this->dateFormatter = $date_formatter;
     $this->mailer = $mailer;
   }

@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
@@ -24,8 +25,8 @@ class FeedbackListBuilder extends EntityListBuilder {
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
       $entity_type,
-      $container->get('entity.manager')->getStorage($entity_type->id()),
-      $container->get('entity.manager')->getStorage('kififeedback_channel'),
+      $container->get('entity_type.manager')->getStorage($entity_type->id()),
+      $container->get('entity_type.manager')->getStorage('kififeedback_channel'),
       $container->get('date.formatter'),
       $container->get('module_handler'),
       $container->get('form_builder')
@@ -181,13 +182,14 @@ class FeedbackListBuilder extends EntityListBuilder {
     $filter = $this->formState->getValues();
 
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('id'), 'desc');
+        ->sort($this->entityType->getKey('id'), 'desc')
+        ->accessCheck(TRUE); // Add access check to the query
 
-      if (!empty($filter['channel'])) {
+    if (!empty($filter['channel'])) {
         $query->condition('channel', $filter['channel']);
-      }
+    }
 
     $query->pager($this->limit);
     return $query->execute();
-  }
+}
 }

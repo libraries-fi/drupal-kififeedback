@@ -15,7 +15,7 @@ class FeedbackController extends ControllerBase {
   }
 
   public function addForm(ChannelInterface $kififeedback_channel) {
-    $feedback = $this->entityManager()->getStorage('kififeedback')->create([
+    $feedback = \Drupal::service('entity_type.manager')->getStorage('kififeedback')->create([
       'channel' => $kififeedback_channel->id(),
     ]);
 

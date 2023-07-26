@@ -79,7 +79,7 @@ function template_preprocess_kififeedback_log(array &$variables) {
   $entry = $variables['entry'];
   $variables['is_forward'] = $entry->getAction() == LogEntryInterface::ACTION_FORWARD;
   $variables['is_response'] = $entry->getAction() == LogEntryInterface::ACTION_RESPOND;
-  $variables['date'] = format_date($entry->getCreatedTime());
+  $variables['date'] = \Drupal::service('date.formatter')->format($entry->getCreatedTime());
 
   $author = $entry->getUser();
   $author_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $author->url(), '@name' => $author->getDisplayName()]);

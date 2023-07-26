@@ -8,6 +8,7 @@ use Drupal\Core\Url;
 
 class ChannelListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
+    $header = [];
     $header['name'] = $this->t('Name');
     $header['url'] = [
       'data' => $this->t('Url'),
@@ -18,6 +19,7 @@ class ChannelListBuilder extends ConfigEntityListBuilder {
   }
 
   public function buildRow(EntityInterface $channel) {
+    $row = [];
     $row['name'] = [
       'data' => $channel->label(),
       'class' => ['menu-label']

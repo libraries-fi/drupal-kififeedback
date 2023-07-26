@@ -47,7 +47,7 @@ class FeedbackListBuilder extends EntityListBuilder {
     $table = parent::render();
     $form = $this->form;
 
-    $form['#access'] = (count($form['channel']['#options']) >= 3);
+    $form['#access'] = ((is_countable($form['channel']['#options']) ? count($form['channel']['#options']) : 0) >= 3);
 
     return [
       '#type' => 'container',
@@ -58,6 +58,7 @@ class FeedbackListBuilder extends EntityListBuilder {
   }
 
   public function buildHeader() {
+    $header = [];
     $header['icon'] = '';
     $header['channel'] = $this->t('Channel');
     $header['subject'] = $this->t('Subject');
@@ -69,6 +70,7 @@ class FeedbackListBuilder extends EntityListBuilder {
   }
 
   public function buildRow(EntityInterface $feedback) {
+    $row = [];
     $basedir = $this->moduleHandler->getModule('kififeedback')->getPath();
 
     // No icon by default. Should channels have their own icons?
@@ -112,7 +114,7 @@ class FeedbackListBuilder extends EntityListBuilder {
     if ($user && $user->isAuthenticated()) {
       $row['sender']['data']['name'] = [
         '#type' => 'link',
-        '#url' => $user->urlInfo(),
+        '#url' => $user->toUrl(),
         '#title' => $feedback->getName(),
       ];
 
@@ -145,7 +147,7 @@ class FeedbackListBuilder extends EntityListBuilder {
       $row['action']['data']['user'] = [
         '#type' => 'link',
         '#title' => $action->getUser()->label(),
-        '#url' => $action->getUser()->urlInfo(),
+        '#url' => $action->getUser()->toUrl(),
         '#prefix' => ' (',
         '#suffix' => ')',
       ];

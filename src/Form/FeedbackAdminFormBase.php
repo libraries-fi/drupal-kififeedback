@@ -110,7 +110,7 @@ class FeedbackAdminFormBase extends ContentEntityForm {
         ],
         'user' => [
           '#type' => 'link',
-          '#url' => $entry->getUser()->urlInfo(),
+          '#url' => $entry->getUser()->toUrl(),
           '#title' => $entry->getUser()->label(),
         ]
       ];

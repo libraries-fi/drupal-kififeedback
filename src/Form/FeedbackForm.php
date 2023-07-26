@@ -28,7 +28,7 @@ class FeedbackForm extends ContentEntityForm {
         ],
       ],
       '#weight' => -10,
-      '#attributes' => array('class' => 'feedback-description')
+      '#attributes' => ['class' => 'feedback-description']
     ];
 
     $form['description_accessibility'] = [
@@ -41,7 +41,7 @@ class FeedbackForm extends ContentEntityForm {
         ],
       ],
       '#weight' => -10,
-      '#attributes' => array('class' => 'feedback-description')
+      '#attributes' => ['class' => 'feedback-description']
     ];
 
     if ($this->currentUser()->isAuthenticated()) {
@@ -66,7 +66,7 @@ class FeedbackForm extends ContentEntityForm {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    drupal_set_message($this->t('Thank you for your feedback. Feedback received at \'@time\'', 
+    $this->messenger()->addStatus($this->t('Thank you for your feedback. Feedback received at \'@time\'', 
       ['@time' => \Drupal::service('date.formatter')->format(time(), 'short')]));
   }
 }

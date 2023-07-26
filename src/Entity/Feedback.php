@@ -180,13 +180,7 @@ class Feedback extends ContentEntityBase {
     
     $fields['is_accessibility_feedback'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Accessibility feedback'))
-      ->setDisplayOptions('form', array(
-        'type' => 'boolean_checkbox',
-        'settings' => array(
-          'display_label' => TRUE,
-        ),
-        'weight' => -1
-      ));
+      ->setDisplayOptions('form', ['type' => 'boolean_checkbox', 'settings' => ['display_label' => TRUE], 'weight' => -1]);
 
     $fields['body'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Message'))

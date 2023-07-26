@@ -36,19 +36,9 @@ class ChannelForm extends BundleEntityFormBase {
       '#required' => FALSE,
     ];
 
-    $form['description_normal'] = array(
-      '#type' => 'text_format',
-      '#title' => t('Description'),
-      '#format'=> $channel->getDescriptionFormat(),
-      '#default_value' => $channel->getDescription(),
-    );
+    $form['description_normal'] = ['#type' => 'text_format', '#title' => t('Description'), '#format'=> $channel->getDescriptionFormat(), '#default_value' => $channel->getDescription()];
 
-    $form['description_accessibility'] = array(
-      '#type' => 'text_format',
-      '#title' => t('Description (accessiblity)'),
-      '#format'=> $channel->getDescriptionAccessibilityFormat(),
-      '#default_value' => $channel->getDescriptionAccessibility(),
-    );
+    $form['description_accessibility'] = ['#type' => 'text_format', '#title' => t('Description (accessiblity)'), '#format'=> $channel->getDescriptionAccessibilityFormat(), '#default_value' => $channel->getDescriptionAccessibility()];
 
     return $form;
   }
@@ -56,8 +46,8 @@ class ChannelForm extends BundleEntityFormBase {
   public function save(array $form, FormStateInterface $form_state) {
     $status = parent::save($form, $form_state);
 
-    drupal_set_message($this->t('Channel created.'));
-    $form_state->setRedirectUrl($this->entity->urlInfo('collection'));
+    $this->messenger()->addStatus($this->t('Channel created.'));
+    $form_state->setRedirectUrl($this->entity->toUrl('collection'));
 
     return $status;
   }

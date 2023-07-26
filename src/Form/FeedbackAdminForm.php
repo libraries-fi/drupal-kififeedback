@@ -57,7 +57,7 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
       'kififeedback' => $feedback,
     ], $this->currentUser());
 
-    drupal_set_message($this->t('Response to feedback was submitted.'));
+    $this->messenger()->addStatus($this->t('Response to feedback was submitted.'));
   }
 
   public function saveDraft(array &$form, FormStateInterface $form_state) {
@@ -66,7 +66,7 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
   }
 
   public function saveSuccessMessage(array $form, FormStateInterface $form_state) {
-    drupal_set_message($this->t('The changes have been saved.'));
+    $this->messenger()->addStatus($this->t('The changes have been saved.'));
   }
 
   public function validateHasEmail(array $form, FormStateInterface $form_state) {

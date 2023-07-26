@@ -65,13 +65,7 @@ function kififeedback_update_8001() {
   $storage_definition = BaseFieldDefinition::create('boolean')
     ->setLabel(new TranslatableMarkup('Accessibility feedback'))
     ->setDefaultValue(false)
-    ->setDisplayOptions('form', array(
-      'type' => 'boolean_checkbox',
-      'settings' => array(
-        'display_label' => TRUE,
-      ),
-      'weight' => -1
-  ));
+    ->setDisplayOptions('form', ['type' => 'boolean_checkbox', 'settings' => ['display_label' => TRUE], 'weight' => -1]);
   
   \Drupal::entityDefinitionUpdateManager()
     ->installFieldStorageDefinition('is_accessibility_feedback', 'kififeedback', 'kififeedback', $storage_definition);

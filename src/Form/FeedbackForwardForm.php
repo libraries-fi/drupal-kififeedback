@@ -8,9 +8,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\kififeedback\LogEntryInterface;
 
 class FeedbackForwardForm extends FeedbackAdminFormBase {
-  const REPLY_NO_REPLY = 0;
-  const REPLY_TO_USER = 1;
-  const REPLY_TO_ADMIN = 2;
+  public const REPLY_NO_REPLY = 0;
+  public const REPLY_TO_USER = 1;
+  public const REPLY_TO_ADMIN = 2;
 
   public function form(array $form, FormStateInterface $form_state) {
     $feedback = $this->entity;
@@ -76,7 +76,7 @@ class FeedbackForwardForm extends FeedbackAdminFormBase {
       'kififeedback' => $this->entity,
     ], $reply_email);
 
-    drupal_set_message($this->t('Feedback forwarded to @email', ['@email' => $forward_email]));
+    $this->messenger()->addStatus($this->t('Feedback forwarded to @email', ['@email' => $forward_email]));
   }
 
   public function actions(array $form, FormStateInterface $form_state) {

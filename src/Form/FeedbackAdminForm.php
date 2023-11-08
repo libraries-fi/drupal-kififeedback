@@ -46,7 +46,7 @@ class FeedbackAdminForm extends FeedbackAdminFormBase {
 
     $feedback->setResponseDraft(['value' => NULL, 'format' => NULL]);
 
-    $log_entry = $this->entityManager->getStorage('kififeedback_log')->create([
+    $log_entry = $this->entityTypeManager->getStorage('kififeedback_log')->create([
       'action' => LogEntryInterface::ACTION_RESPOND,
       'message' => $message,
     ]);

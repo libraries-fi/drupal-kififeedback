@@ -52,7 +52,7 @@ class FeedbackForwardForm extends FeedbackAdminFormBase {
 
   public function sendMessage(array $form, FormStateInterface $form_state) {
     $forward_email = $form_state->getValue('forward_email');
-    $result = $this->entityManager->getStorage('user')->loadByProperties(['mail' => $forward_email]);
+    $result = $this->entityTypeManager->getStorage('user')->loadByProperties(['mail' => $forward_email]);
     $user = reset($result);
 
     $reply_email = $form_state->getValue('reply_to');
@@ -61,14 +61,6 @@ class FeedbackForwardForm extends FeedbackAdminFormBase {
       $reply_email = NULL;
     }
 
-    $log_entry = $this->entityManager->getStorage('kififeedback_log')->create([
-      'action' => LogEntryInterface::ACTION_FORWARD,
-      'forward_email' => $forward_email,
-      'forward_user' => $user ?: NULL,
-      'message' => $form_state->getValue('forward_message'),
-    ]);
-
-    $this->entity->addActionToLog($log_entry);
 
     $langcode = $this->entity->language()->getId();
     $this->mailer->mail('kififeedback', 'forward', $user ?: $forward_email, $langcode, [
@@ -77,6 +69,25 @@ class FeedbackForwardForm extends FeedbackAdminFormBase {
     ], $reply_email);
 
     $this->messenger()->addStatus($this->t('Feedback forwarded to @email', ['@email' => $forward_email]));
+
+    $user_entry = $user ? $user->id() : "";
+
+    // Create a log entry.
+    $log_message = <<<EOT
+Mail sent from kififeedback with the following data:
+action: @action,
+forward_email: @forward_email,
+forward_user: @forward_user,
+message: @message
+EOT;
+    
+    \Drupal::logger('kififeedback')
+      ->notice($log_message, [
+        '@action' => LogEntryInterface::ACTION_FORWARD,
+        '@forward_email' => $forward_email,
+        '@forward_user' => $user_entry,
+        '@message' => $form_state->getValue('forward_message'),
+      ]);
   }
 
   public function actions(array $form, FormStateInterface $form_state) {

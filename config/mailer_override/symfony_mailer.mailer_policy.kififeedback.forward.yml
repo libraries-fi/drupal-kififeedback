@@ -1,0 +1,13 @@
+langcode: fi
+status: true
+dependencies:
+  module:
+    - kififeedback
+id: kififeedback.forward
+configuration:
+  email_subject:
+    value: 'Fwd: [feedback:subject]'
+  email_body:
+    content:
+      value: "[feedback:forward-message]\r\n\r\n<blockquote>\r\n  <cite>[feedback:author]</cite> – [feedback:date]\r\n  [feedback:body]\r\n</blockquote>"
+      format: email_html

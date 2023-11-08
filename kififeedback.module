@@ -21,21 +21,6 @@ function kififeedback_theme() {
   ];
 }
 
-function kififeedback_mail($key, array &$message, array $params) {
-  switch ($key) {
-    case 'forward':
-    case 'reply':
-      $feedback = $params['kififeedback'];
-      $message['params']['feedback'] = [
-        'entity' => $feedback,
-        'subject' => $feedback->getSubject(),
-        'body' => $feedback->getBody(),
-        'author' => $feedback->getName(),
-      ];
-      break;
-  }
-}
-
 function kififeedback_tokens($type, array $tokens, array $data, array $options, BubbleableMetadata $metadata) {
   $replacements = [];
 
@@ -82,11 +67,11 @@ function template_preprocess_kififeedback_log(array &$variables) {
   $variables['date'] = \Drupal::service('date.formatter')->format($entry->getCreatedTime());
 
   $author = $entry->getUser();
-  $author_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $author->url(), '@name' => $author->getDisplayName()]);
+  $author_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $author->toUrl()->toString(), '@name' => $author->getDisplayName()]);
   $variables['author'] = Markup::create((string)$author_link);
 
   if ($user = $entry->getForwardUser()) {
-    $recipient_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $user->url(), '@name' => $user->getDisplayName()]);
+    $recipient_link = new FormattableMarkup('<a href=":url">@name</a>', [':url' => $user->toUrl()->toString(), '@name' => $user->getDisplayName()]);
     $variables['recipient'] = Markup::create((string)$recipient_link);
   } elseif ($email = $entry->getForwardEmail()) {
     $variables['recipient'] = $email;
